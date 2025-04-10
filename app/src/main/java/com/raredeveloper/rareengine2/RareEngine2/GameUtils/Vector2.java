@@ -128,7 +128,7 @@ public class Vector2 {
 
     @Override
     public String toString() {
-        return x + "," + y; // No inversion anymore
+        return "("+x + "," + y+")"; // No inversion anymore
     }
 
     public static float doProduct(Vector2 v1, Vector2 v2) {
