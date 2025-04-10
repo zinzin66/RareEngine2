@@ -15,9 +15,10 @@ public class ObjectScript extends Component
 	public void update(GameObject o,GameView gv)
 	{
 		super.update(o,gv);
-		o.position.setY(o.position.getY()+1);
-		o.rotation =(float) Vector2.angleBetween(o.position,gv.touchPosition);
-		if(gv.isDrag)gv.toast(gv.touchPosition.toString(),Toast.LENGTH_SHORT);
+	if(o.isDrag){
+			o.position.set(o.touchPosition.getX(),o.touchPosition.getY());
+		}
+		
 	}
 	
 	

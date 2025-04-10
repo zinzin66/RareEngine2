@@ -78,56 +78,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			toast("wrong password",Toast.LENGTH_LONG);
 		}
 	}
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		switch(event.getAction()){
-			case event.ACTION_DOWN:
-				isDown = true;
-				isUp = false;
-				isClick = false;
-				isDrag = false;
-				touchmilli = (int) System.currentTimeMillis();
-				touchdist.set(event.getX(),-event.getY());
-				findPositions(event);
-				onDown();
-				break;
-			case event.ACTION_UP:
-				isUp = true;
-				isDrag = false;
-				
-				if(isDown){
-					if(((System.currentTimeMillis()-touchmilli)<= 200)&&touchdist!=null){
-						if(touchdist.distance(new Vector2(event.getX(),-event.getY()))<=50){
-							isClick = true;
-							onClick();
-						}else isClick =false;
-					}else isClick = false;
-				}else isClick = false;
-				isDown=true;
-				touchmilli = 0;
-				touchdist.set(0,0);
-				onUp();
-				break;
-			case event.ACTION_MOVE:
-				isDrag = true;
-				isClick = false;
-				isUp = false;
-				findPositions(event);
-				onDrag();
-				break;
-		}
-		return super.onTouchEvent(event);
-	}
 	
 	public void findPositions(MotionEvent e){
-		touchPositionui.set(e.getX()-(getWidth()/2),-e.getY()-(getHeight()/2));
-		touchPosition.set(e.getX()-(getWidth()/2)+CameraPosition.getX(),-e.getY()-(getHeight()/2)+CameraPosition.getY());
+		touchPositionui.set(e.getX()-(getWidth()/2),-(e.getY()-(getHeight()/2)));
+		touchPosition.set(e.getX()-(getWidth()/2)+CameraPosition.getX(),-(e.getY()-(getHeight()/2)+CameraPosition.getY()));
 	}
 	
 	public void setBackground(int color)
 	{
-		
 		backgroundcolor = color;
 	}
 	public void onUp(){
@@ -328,6 +286,53 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		super(context);
 		getHolder().addCallback(this);
 		this.activity = activity;
+		setFocusable(true);
+		setFocusableInTouchMode(true);
+		setOnTouchListener(new SurfaceView.OnTouchListener(){
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					switch(event.getAction()){
+						case MotionEvent.ACTION_DOWN:
+							isDown = true;
+							isUp = false;
+							isClick = false;
+							isDrag = false;
+							touchmilli = (int) System.currentTimeMillis();
+							touchdist.set(event.getX(),-event.getY());
+							findPositions(event);
+							onDown();
+							break;
+						case MotionEvent.ACTION_UP:
+							isUp = true;
+							isDrag = false;
+
+							if(isDown){
+								if(((System.currentTimeMillis()-touchmilli)<= 200)&&touchdist!=null){
+									if(touchdist.distance(new Vector2(event.getX(),-event.getY()))<=50){
+										isClick = true;
+										onClick();
+									}else isClick =false;
+								}else isClick = false;
+							}else isClick = false;
+							isDown=true;
+							touchmilli = 0;
+							touchdist.set(0,0);
+							onUp();
+							break;
+						case MotionEvent.ACTION_MOVE:
+							isDrag = true;
+							isClick = false;
+							isUp = false;
+							findPositions(event);
+							//copy(""+touchPosition);
+							onDrag();
+							break;
+					}
+					return true;
+				}
+			});
 	}
 	public Activity getActivity(){
 		return activity;
