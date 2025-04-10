@@ -1,5 +1,6 @@
 package RareEngine2.GameUtils;
 
+
 public class UIFitter {
     // Calculate position on the real screen
     public static Vector2 getPosition(Vector2 fakeScreenSize, Vector2 realScreenSize, Vector2 fakePosition) {

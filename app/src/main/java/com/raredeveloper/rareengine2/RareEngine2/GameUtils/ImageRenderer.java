@@ -4,6 +4,7 @@ import android.content.res.*;
 import android.widget.*;
 
 
+
 public class ImageRenderer extends Renderer
 {
 	public Bitmap image;

@@ -19,6 +19,7 @@ public class MainActivity extends Activity
 		GameView gv = new GameView(this,this);
         setContentView(gv);
 		MainActivity.ct = this;
+		
 		try{
 		GameObject o = new GameObject();
 		ImageRenderer renderer = new ImageRenderer();

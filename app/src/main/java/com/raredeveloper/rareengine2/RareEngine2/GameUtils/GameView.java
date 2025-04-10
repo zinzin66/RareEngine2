@@ -8,6 +8,7 @@ import java.util.*;
 import android.widget.*;
 import android.app.*;
 
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
 	public boolean paused = false;

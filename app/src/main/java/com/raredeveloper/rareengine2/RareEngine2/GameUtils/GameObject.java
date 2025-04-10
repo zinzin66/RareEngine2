@@ -1,6 +1,7 @@
 package RareEngine2.GameUtils;
 import java.util.*;
 
+
 public class GameObject
 {
 	public boolean isEnabled,isVisible,isDown,isUp,isClick,isDrag;

@@ -5,7 +5,6 @@ import android.widget.*;
 
 public class ObjectScript extends Component
 {
-
 	@Override
 	public void start(GameObject o,GameView gv)
 	{
