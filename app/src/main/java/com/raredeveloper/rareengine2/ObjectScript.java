@@ -9,6 +9,8 @@ public class ObjectScript extends Component
 	public void start(GameObject o,GameView gv)
 	{
 		super.start(o,gv);
+		gv.CameraPosition.set(100,100);
+		//o.setLayer("ui");
 	}
 
 	@Override

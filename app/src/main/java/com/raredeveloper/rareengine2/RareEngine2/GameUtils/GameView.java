@@ -191,7 +191,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		return vec2;
 	}
 	public RectF getRectFWithScaleAndPositionUi(Vector2 p,Vector2 s){
-		return new RectF(p.getX()-s.getX()/2-CameraPosition.getX(),p.getY()-s.getY()/2-CameraPosition.getY(),p.getX()+s.getX()/2-CameraPosition.getX(),p.getY()+s.getY()/2-CameraPosition.getY());
+		return new RectF(p.getX()-s.getX()/2,p.getY()-s.getY()/2,p.getX()+s.getX()/2,p.getY()+s.getY()/2);
 	}
 	public RectF getRectFOfObjectUi(GameObject o){
 		return getRectFWithScaleAndPositionUi(o.globalposition,o.globalscale);
@@ -252,7 +252,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				if(component.isEnabled&&object.isVisible&&object.isEnabled){
 					int id=canvas.save();
 					Vector2 cam = new Vector2(CameraPosition);
-					if(object.getLayer().equals("ui")){
+					if(!object.getLayer().equals("ui")){
 						canvas.translate((getWidth()/2)+object.globalposition.getX()-cam.getX(),(getHeight()/2)-object.globalposition.getY()-cam.getY());
 						canvas.rotate(object.globalrotation);
 						((Renderer)component).render(canvas,object,paint,this);
@@ -326,7 +326,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 							isClick = false;
 							isUp = false;
 							findPositions(event);
-							//copy(""+touchPosition);
 							onDrag();
 							break;
 					}
