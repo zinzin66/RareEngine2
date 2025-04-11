@@ -1,15 +1,17 @@
 package RareEngine2.GameUtils;
 import java.util.*;
+import android.view.*;
 
 
 public class GameObject
 {
 	public boolean isEnabled,isVisible,isDown,isUp,isClick,isDrag;
-	public Vector2 position,scale,globalposition,globalscale,touchPosition;
+	public Vector2 position,scale,globalposition,globalscale,touchPosition,dragValue;
 	public GameObject parent;
 	public float rotation,globalrotation;
 	private ArrayList<Component> components;
 	public String name,layer;
+	public MotionEvent event = null;
 	public GameObject(){
 		isEnabled = true;
 		isVisible = true;
@@ -17,6 +19,7 @@ public class GameObject
 		isDown = false;isUp = true;isClick = false;isDrag = false;
 		position=new Vector2();
 		scale = new Vector2(100,100);
+		dragValue = new Vector2();
 		name = "game object";
 		layer = "objects";
 		touchPosition = new Vector2();

@@ -18,7 +18,7 @@ public class ObjectScript extends Component
 	{
 		super.update(o,gv);
 	if(o.isDrag){
-			o.position.set(o.touchPosition.getX(),o.touchPosition.getY());
+			o.position.add(o.dragValue);
 		}
 		
 	}
