@@ -21,7 +21,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	private Paint paint;
 	private int backgroundcolor,touchmilli;
 	private Vector2 touchdist = new Vector2();
-	public Vector2 CameraPosition = new Vector2(),touchPosition = new Vector2(),touchPositionui = new Vector2();
+	public Vector2 CameraPosition = new Vector2(),touchPosition = new Vector2(),touchPositionui = new Vector2(),dragValue = new Vector2(),dragValueUi = new Vector2();
 	public boolean isDown,isUp,isClick,isDrag;
 	private Activity activity;
 	private boolean drawWaterMark=true;
@@ -88,13 +88,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	{
 		backgroundcolor = color;
 	}
-	public void onUp(){
+	public void onUp(MotionEvent event){
 		for(GameObject object:objects){
+			object.event = event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
 					object.isUp = true;
 					object.isDown = false;
 					object.isDrag = false;
+					dragValueUi.set(0,0);
 					
 				}else{
 					allup(object);
@@ -104,7 +106,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					object.isUp = true;
 					object.isDown = false;
 					object.isDrag = false;
-					
+					dragValue.set(0,0);
 				}else{
 					allup(object);
 				}
@@ -116,9 +118,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		object.isDrag = false;
 		object.isUp = true;
 		object.isClick = false;
+		dragValue.set(0,0);
+		dragValueUi.set(0,0);
+		
 	}
-	public void onDown(){
+	public void onDown(MotionEvent event){
 		for(GameObject object:objects){
+			object.event=event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
 					object.isDown = true;
@@ -140,14 +146,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 	}
-	public void onDrag(){
+	public void onDrag(MotionEvent event){
 		for(GameObject object:objects){
+			object.event= event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
 					object.isDrag=true;
 					object.isUp = false;
 					object.isClick = false; 
 					object.touchPosition.set(touchPositionui.getX(),touchPositionui.getY());
+					object.dragValue.set(dragValueUi.getX(),dragValueUi.getY());
 				}else{
 					allup(object);
 				}
@@ -157,14 +165,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					object.isUp = false;
 					object.isClick = false;
 					object.touchPosition.set(touchPosition.getX(),touchPosition.getY());
+					object.dragValue.set(dragValue.getX(),dragValue.getY());
 				}else{
 					allup(object);
 				}
 			}
 		}
 	}
-	public void onClick(){
+	public void onClick(MotionEvent event){
 		for(GameObject object:objects){
+			object.event=event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
 					object.isClick = true;
@@ -179,6 +189,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					object.isClick =true;
 					object.isDrag = false;
 					object.isDown = false;
+					
 				}else{
 					allup(object);
 				}
@@ -295,6 +306,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				{
 					switch(event.getAction()){
 						case MotionEvent.ACTION_DOWN:
+							if(isUp){
+								findPositions(event);
+							}
 							isDown = true;
 							isUp = false;
 							isClick = false;
@@ -302,31 +316,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 							touchmilli = (int) System.currentTimeMillis();
 							touchdist.set(event.getX(),-event.getY());
 							findPositions(event);
-							onDown();
+							onDown(event);
 							break;
 						case MotionEvent.ACTION_UP:
 							isUp = true;
 							isDrag = false;
-
+							dragValue.set(0,0);
+							dragValueUi.set(0,0);
 							if(isDown){
 								if(((System.currentTimeMillis()-touchmilli)<= 200)&&touchdist!=null){
 									if(touchdist.distance(new Vector2(event.getX(),-event.getY()))<=50){
 										isClick = true;
-										onClick();
+										onClick(event);
 									}else isClick =false;
 								}else isClick = false;
 							}else isClick = false;
 							isDown=true;
 							touchmilli = 0;
 							touchdist.set(0,0);
-							onUp();
+							onUp(event);
 							break;
 						case MotionEvent.ACTION_MOVE:
 							isDrag = true;
 							isClick = false;
 							isUp = false;
+							Vector2 prevpos = new Vector2(touchPosition);
+							Vector2 prevposui = new Vector2(touchPositionui);
 							findPositions(event);
-							onDrag();
+							Vector2 nowpos = new Vector2(touchPosition);
+							Vector2 nowposui = new Vector2(touchPositionui);
+							dragValue = nowpos.subtract(prevpos);
+							dragValueUi = nowposui.subtract(prevposui);
+							onDrag(event);
 							break;
 					}
 					return true;
