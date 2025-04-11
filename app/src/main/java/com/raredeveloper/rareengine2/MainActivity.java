@@ -24,5 +24,10 @@ public class MainActivity extends Activity
 		o.addComponent(renderer,gv);
 		o.addComponent(new ObjectScript(),gv);
 		gv.addObject(o);
+		GameObject oo = new GameObject();
+		TextRenderer atr = new TextRenderer();
+		oo.addComponent(atr,gv);
+		atr.text="hello world\nhi\nthis is multiline text";
+		gv.addObject(oo);
     }
 }

@@ -40,6 +40,15 @@ public class GameObject
 		components.remove(component);
 		component.destroy(this,gv);
 	}
+	public void removeComponent(Class type,GameView gv){
+		for(Component comp:components){
+			if(type.getTypeName().equals(comp.getClass().getTypeName())){
+				components.remove(comp);
+				break;
+			}
+		}
+		
+	}
 	public Component getComponentAt(int index){
 		return components.get(index);
 	}

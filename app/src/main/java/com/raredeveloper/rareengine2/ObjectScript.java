@@ -17,6 +17,7 @@ public class ObjectScript extends Component
 	public void update(GameObject o,GameView gv)
 	{
 		super.update(o,gv);
+		//gv.toast("hi",Toast.LENGTH_LONG);
 	if(o.isDrag){
 			o.position.add(o.dragValue);
 		}

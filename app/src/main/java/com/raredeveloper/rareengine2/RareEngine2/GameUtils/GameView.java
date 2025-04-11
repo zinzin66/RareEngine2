@@ -7,6 +7,7 @@ import android.view.*;
 import java.util.*;
 import android.widget.*;
 import android.app.*;
+import android.util.*;
 
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
@@ -16,10 +17,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	public static final String REMOVE_WATERMARK_PASS = "-watermark";
 	private long frames = 0;
 	private HandlerThread thread;
-	public ArrayList<GameObject> objects = new ArrayList<GameObject>();
+	public Scene currentScene;
 	public ArrayList<String> layers = new ArrayList<>();
 	private Paint paint;
-	private int backgroundcolor,touchmilli;
+	private int touchmilli;
 	private Vector2 touchdist = new Vector2();
 	public Vector2 CameraPosition = new Vector2(),touchPosition = new Vector2(),touchPositionui = new Vector2(),dragValue = new Vector2(),dragValueUi = new Vector2();
 	public boolean isDown,isUp,isClick,isDrag;
@@ -31,20 +32,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		thread = new HandlerThread("thread");
 		thread.start();
 		paint = new Paint();
+		//currentScene=new Scene();
+		if(currentScene==null){
+			setScene(new Scene());
+		}
 		layers.add("background");
 		layers.add("objects");
-		isDown = false;isUp = true;isClick = false;isDrag = false;
+		isDown = false;isUp = true;isClick = false;isDrag = false;paused=false;
 		layers.add("ui");
-		setBackground(Color.BLACK);
+		currentScene.setBackgroundColour(Color.BLACK);
 		h= new Handler(thread.getLooper());
 		h.post(new Runnable(){
 
 				@Override
 				public void run()
 				{
-					Canvas can = sh.lockCanvas();
-					can.drawColor(backgroundcolor);
-					update(can);
+					Canvas can =new Canvas();
+					can= sh.lockCanvas();
+					if(can!=null){
+						can.drawColor(currentScene. backgroundcolor);
+						update(can);
+					}
 					if(drawWaterMark){
 						drawWaterMark(can);
 					}
@@ -84,12 +92,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		touchPosition.set(e.getX()-(getWidth()/2)+CameraPosition.getX(),-(e.getY()-(getHeight()/2)+CameraPosition.getY()));
 	}
 	
-	public void setBackground(int color)
-	{
-		backgroundcolor = color;
-	}
+	
 	public void onUp(MotionEvent event){
-		for(GameObject object:objects){
+		for(GameObject object:currentScene.objects){
 			object.event = event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
@@ -123,7 +128,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		
 	}
 	public void onDown(MotionEvent event){
-		for(GameObject object:objects){
+		for(GameObject object:currentScene.objects){
 			object.event=event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
@@ -146,8 +151,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 	}
+	public void setScene(Scene s){
+		currentScene=s;
+	}
+	public Scene getScene(){
+		return currentScene;
+	}
 	public void onDrag(MotionEvent event){
-		for(GameObject object:objects){
+		for(GameObject object:currentScene.objects){
 			object.event= event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
@@ -173,7 +184,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		}
 	}
 	public void onClick(MotionEvent event){
-		for(GameObject object:objects){
+		for(GameObject object:currentScene.objects){
 			object.event=event;
 			if(object.getLayer().equals("ui")){
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
@@ -232,7 +243,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		thread.quitSafely();
 	}
 	public void addObject(GameObject o){
-		objects.add(o);
+		currentScene.objects.add(o);
+	}
+	public void removeObject(GameObject o){
+		currentScene.objects.remove(o);
+	}
+	public void removeObjectWithName(String name){
+		for(GameObject o:currentScene.objects){
+			if(o.name == name){
+				currentScene.objects.remove(o);
+				break;
+			}
+		}
 	}
 	private void update(Canvas canvas){
 		frames++;
@@ -240,21 +262,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		if(frames == 1){
 			start(frames);
 		}
-		
-		for(GameObject object:objects){
+		Log.d("update","working update");
+		for(GameObject object:currentScene.objects){
 			object.calculateGlobals();
 			for(String layer : layers){
+				Log.d("layercheck","reached layer check witb number of objects:"+currentScene.objects.size());
 				if(!object.getLayer().equals("ui")&&layer.equals(object.getLayer()))render(canvas,object);
 			}
 		}
-		for(GameObject object:objects){
+		for(GameObject object:currentScene.objects){
 			if(object.getLayer().equals("ui"))render(canvas,object);
 		}
 	}
 	public void render(Canvas canvas,GameObject object){
+		Log.d("render","working render");
 		if(object.isEnabled&&!paused){
 			
 			for(Component component:object.getComponents()){
+				Log.d("updatecomp","working updatecomp");
 				component.update(object,this);
 			}
 		}
@@ -263,6 +288,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				if(component.isEnabled&&object.isVisible&&object.isEnabled){
 					int id=canvas.save();
 					Vector2 cam = new Vector2(CameraPosition);
+					Log.d("rendercomp","working rendercomp");
 					if(!object.getLayer().equals("ui")){
 						canvas.translate((getWidth()/2)+object.globalposition.getX()-cam.getX(),(getHeight()/2)-object.globalposition.getY()-cam.getY());
 						canvas.rotate(object.globalrotation);
@@ -295,6 +321,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	public GameView(Context context,Activity activity){
 		super(context);
+		currentScene=new Scene();
 		getHolder().addCallback(this);
 		this.activity = activity;
 		setFocusable(true);
@@ -353,8 +380,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					return true;
 				}
 			});
+		
 	}
 	public Activity getActivity(){
 		return activity;
 	}
+	public void pause() {
+		paused = true;
+		try {
+			thread.join(); // wait for the thread to finish
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void resume() {
+		paused = false;
+		thread = new HandlerThread("new thread");
+		thread.start();
+	}
+	
 }
