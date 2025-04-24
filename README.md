@@ -19,3 +19,7 @@ This project is licensed under the following terms:
 - **No Commercial Use**: The engine is provided for non-commercial purposes only unless explicit permission is granted.
 
 By using this project, you agree to these terms and conditions.
+
+## Physics
+
+for physics 100% credit goes to **Jbox2d developer**
