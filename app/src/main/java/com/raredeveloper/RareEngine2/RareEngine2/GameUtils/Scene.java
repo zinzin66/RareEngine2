@@ -18,7 +18,7 @@ public class Scene
 	}
 	public void removeObjectWithName(String name){
 		for(GameObject o:objects){
-			if(o.name == name){
+			if(o.name.equals(name)){
 				objects.remove(o);
 				break;
 			}
