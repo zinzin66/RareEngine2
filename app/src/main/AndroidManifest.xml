@@ -32,6 +32,16 @@
 
         <activity android:name=".GlobalApplication$CrashActivity"/>
 
+        <receiver android:name=".rt">
+
+            <intent-filter>
+
+                <action android:name=".rt"/>
+
+            </intent-filter>
+
+        </receiver>
+
     </application>
 
 </manifest>

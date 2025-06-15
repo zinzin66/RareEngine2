@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+//@author raredeveloper
 public class GlobalApplication extends Application {
 
     private static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
