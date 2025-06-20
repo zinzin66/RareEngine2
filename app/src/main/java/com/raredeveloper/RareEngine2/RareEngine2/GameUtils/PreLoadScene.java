@@ -12,9 +12,16 @@ you can store scene here and create scene from anywhere to initialize to screen
 public class PreLoadScene {
     public ArrayList<GameObject> objects ;
 	public int backgroundcolor=0;
+	private SceneComponent comp;
     public PreLoadScene(){
         objects = new ArrayList<>();
     }
+	public void setSceneComponent(SceneComponent comp){
+		this.comp = comp;
+	}
+	public SceneComponent getSceneComponent(){
+		return comp;
+	}
     public void addObject(GameObject o){
         objects.add(o);
     }
@@ -38,6 +45,7 @@ public class PreLoadScene {
         for(GameObject o:objects){
             s.addObject(o.copy(gv));
         }
+		if(comp!= null)s.setSceneComponent(getSceneComponent().copy(),gv);
         s.setBackgroundColour(backgroundcolor);
         return s;
     }

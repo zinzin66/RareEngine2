@@ -1,6 +1,7 @@
 package RareEngine2.GameUtils;
 import java.util.*;
 import android.view.*;
+import android.util.Log;
 
 
 public class GameObject implements Cloneable
@@ -144,18 +145,23 @@ public class GameObject implements Cloneable
 	}
 	public GameObject copy(GameView gv){
         try {
+            gv.copy("1");
             GameObject clone = (GameObject)this.clone();
+            gv.copy("2");
             ArrayList<Component> g = new ArrayList<>();
+            gv.copy("3");
             clone.components = g;
-            for(Component c:components){
-                clone.addComponent(c.copy(),gv);
+            gv.copy("4");
+			Iterator<Component> i = components.iterator();
+            while(i.hasNext()){
+                clone.addComponent(i.next().copy(),gv);
             }
-            
+            gv.copy("5");
             clone.position = new Vector2(position);
             clone.scale = new Vector2(scale);
             return  clone;
             
-        } catch (CloneNotSupportedException e) {
+        } catch (Exception e) {
             return new GameObject();
         }
     }
