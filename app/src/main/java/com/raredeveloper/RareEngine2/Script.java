@@ -4,6 +4,7 @@ import RareEngine2.GameUtils.GameObject;
 import RareEngine2.GameUtils.GameView;
 import RareEngine2.GameUtils.Vector2;
 import RareEngine2.GameUtils.ImageRenderer;
+import android.graphics.Color;
 
 /**
  * @Author Rare Developer 
@@ -21,6 +22,7 @@ public class Script extends Component {
     @Override
     public void update(GameObject o, GameView gv) {
         o.position.add(new Vector2(0,-2));
+        gv.currentScene.backgroundcolor = Color.BLUE;
         frames++;
         if(frames ==60){
            GameObject op= o.copy(gv);

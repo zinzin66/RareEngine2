@@ -7,8 +7,16 @@ public class Scene
 {
 	public ArrayList<GameObject> objects ;
 	public int backgroundcolor=0;
+	private SceneComponent comp;
 	public Scene(){
 		objects = new ArrayList<GameObject>();
+	}
+	public void setSceneComponent(SceneComponent comp,GameView gv){
+		this.comp = comp;
+		if(comp!=null)getSceneComponent().onAttach(gv);else getSceneComponent().onRemove(gv);
+	}
+	public SceneComponent getSceneComponent(){
+		return comp;
 	}
 	public void addObject(GameObject o){
 		objects.add(o);

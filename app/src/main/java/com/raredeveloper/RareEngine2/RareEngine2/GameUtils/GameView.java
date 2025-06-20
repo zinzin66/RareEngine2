@@ -40,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		layers.add("objects");
 		isDown = false;isUp = true;isClick = false;isDrag = false;paused=false;
 		layers.add("ui");
-		currentScene.setBackgroundColour(Color.BLACK);
+		currentScene.setBackgroundColour(Color.WHITE);
 		h= new Handler(thread.getLooper());
 		h.post(new Runnable(){
 
@@ -50,8 +50,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					Canvas can =new Canvas();
 					can= sh.lockCanvas();
 					if(can!=null){
-						can.drawColor(currentScene. backgroundcolor);
+						can.drawColor(currentScene.backgroundcolor);
+                        try{
 						update(can);
+						}catch(Exception e){}
 					}
 					if(drawWaterMark){
 						drawWaterMark(can);
@@ -70,8 +72,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		float width = paint.measureText("made with RareEngine2");
 		can.translate(getWidth()/2-(width/2),getHeight()-80);
 		paint.setColor(Color.WHITE);paint.setTextSize(30);paint.setAntiAlias(true);
-		
-		
 		can.drawText("made with RareEngine2",0,0,paint);
 		paint.setColor(Color.BLACK);
 		paint.setStyle(Paint.Style.FILL);
@@ -153,6 +153,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	public void setScene(Scene s){
 		currentScene=s;
+        
 	}
 	public Scene getScene(){
 		return currentScene;
@@ -262,7 +263,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		if(frames == 1){
 			start(frames);
 		}
+		if(currentScene.getSceneComponent()!=null&&!paused)currentScene.getSceneComponent().update(this,canvas,paint); else if(currentScene.getSceneComponent()!=null) currentScene.getSceneComponent().paused(this);
 		Log.d("update","working update");
+        
 		for(GameObject object:currentScene.objects){
 			object.calculateGlobals();
 			for(String layer : layers){
@@ -270,6 +273,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				if(!object.getLayer().equals("ui")&&layer.equals(object.getLayer()))render(canvas,object);
 			}
 		}
+        
 		for(GameObject object:currentScene.objects){
 			if(object.getLayer().equals("ui"))render(canvas,object);
 		}
@@ -280,9 +284,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			
 			for(Component component:object.getComponents()){
 				Log.d("updatecomp","working updatecomp");
-				component.update(object,this);
+				if(component.isEnabled)component.update(object,this);
+			}
+		}else{
+			for(Component component:object.getComponents()){
+				Log.d("pausedcomp","working pausedcomp");
+				if(component.isEnabled)component.paused(object,this);
 			}
 		}
+        //canvas.drawColor(currentScene.backgroundcolor);
 		for(Component component:object.getComponents()){
 			if(component instanceof Renderer){
 				if(component.isEnabled&&object.isVisible&&object.isEnabled){

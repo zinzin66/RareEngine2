@@ -13,6 +13,7 @@ public class TextRenderer extends Renderer
 	public FontFrom fontfrom = FontFrom.Default;
 	public String fontpath="";
 	public int fontResourceId=-1;
+	public Vector2 scale;
 	
 	public enum FontFrom{
 		Asset,File,Default,Resource
@@ -44,25 +45,29 @@ public class TextRenderer extends Renderer
 		for(String ss:s){
 			float measuredWidth = p.measureText(ss);
 			float measuredHeight = p.getFontMetrics().descent-p.getFontMetrics().ascent;
+			scale.set(measuredWidth,measuredHeight);
 			if(width<measuredWidth){
 				width=measuredWidth;
 			}
 			int index = Arrays.asList(s).indexOf(ss);
 			height+=measuredHeight;
 			if(!centered){
-				canvas.drawText(ss,0,index*measuredHeight,p);
+				canvas.drawText(ss,-measuredWidth/2,(index*measuredHeight)/*+(measuredHeight/2)*/,p);
 			}
 		}
-		object.setScale(width,height);
+		//object.setScale(width,height);
 		if(!centered)return;
 		for(String ss:s){
 			float measuredWidth = p.measureText(ss);
 			float measuredHeight = p.getFontMetrics().descent-p.getFontMetrics().ascent;
+			scale.set(measuredWidth,measuredHeight);
 			int index = Arrays.asList(s).indexOf(ss);
-			canvas.drawText(ss,(width-measuredWidth)/2,index*measuredHeight,p);
+			canvas.drawText(ss,((width-measuredWidth)/2)-(measuredWidth/2),(index*measuredHeight)/*+(measuredHeight/2)*/,p);
 		}
 	}
-	
+	public TextRenderer(){
+		scale = new Vector2();
+	}
 	public FontFrom getFontFrom(){
 		return fontfrom;
 	}

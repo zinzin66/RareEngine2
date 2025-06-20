@@ -24,4 +24,8 @@ public class Component implements Cloneable
             return new Component();
         }
     }
+	//on pause
+	public void paused(GameObject o,GameView gv){
+		
+	}
 }
