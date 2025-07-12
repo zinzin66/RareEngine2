@@ -14,7 +14,12 @@ public class MainActivity extends Activity {
 	
     //main game view
      public GameView gamev;
-     public PreLoadScene pls;
+	public PreLoadScene pls;
+
+	@Override()
+	public void onPointerCaptureChanged(boolean hasCapture) {
+		
+	}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,3 +50,4 @@ public class MainActivity extends Activity {
     }
 	
 }
+

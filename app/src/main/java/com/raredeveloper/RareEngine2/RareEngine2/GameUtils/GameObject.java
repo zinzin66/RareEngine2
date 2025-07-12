@@ -2,6 +2,7 @@ package RareEngine2.GameUtils;
 import java.util.*;
 import android.view.*;
 import android.util.Log;
+import java.lang.annotation.Annotation;
 
 
 public class GameObject implements Cloneable
@@ -53,6 +54,18 @@ public class GameObject implements Cloneable
 	public Component getComponentAt(int index){
 		return components.get(index);
 	}
+	@SuppressWarnings("unchecked")
+	public <T extends Component> T getComponent(Class<T> c) {
+		if (components != null) {
+			for (Component com : components) {
+				if (c.isInstance(com)) {
+					return  (T)com;
+				}
+			}
+		}
+		return null; // Return null if not found
+	}
+	
 	public void removeComponentAt(int id){
 		components.remove(id);
 	}

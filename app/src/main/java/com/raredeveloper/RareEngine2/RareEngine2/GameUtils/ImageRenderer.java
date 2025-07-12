@@ -14,14 +14,18 @@ public class ImageRenderer extends Renderer
 	public Bitmap image;
 	public Vector2 tilescale,tileid;
 	public static final float MATCH_IMAGE =-1;
+	private Vector2 prevscale;
+	private Bitmap previmg;
 	public ImageRenderer(){
 		tileid = new Vector2(0,0);
 		tilescale = new Vector2();
+		prevscale = new Vector2();
 	}
 	@Override
 	public void start(GameObject o,GameView gv)
 	{
 		super.start(o,gv);
+		prevscale.set(o.scale.getX(),o.scale.getY());
 		
 	}
 	public Vector2 getTileIdWithNumber(int number){
@@ -57,6 +61,13 @@ public class ImageRenderer extends Renderer
 				tilescale.setY(image.getHeight());
 			}
 			Rect src = new Rect();
+			if(prevscale.getX()!=object.scale.getX()||prevscale.getY()!=object.scale.getY()||previmg!=image){
+				prevscale.set(object.scale.getX(),object.scale.getY());
+				Bitmap mapi = Bitmap.createScaledBitmap(image,(int)prevscale.getX(),(int)prevscale.getY(),true);
+				image = mapi;
+                previmg = image;
+				
+			}
 			src.set(Math.round(tileid.getX()*tilescale.getX()),Math.round(tileid.getY()*tilescale.getY()),Math.round(tilescale.getX()+(tileid.getX()*tilescale.getX())),Math.round(tilescale.getY()+(tileid.getY()*tilescale.getY())));
 			RectF dst = new RectF();
 			//ltrb
@@ -83,6 +94,7 @@ public class ImageRenderer extends Renderer
         ImageRenderer r = (ImageRenderer)super.copy();
         r.tileid = new Vector2(tileid);
         r.tilescale = new Vector2(tilescale);
+		r.prevscale = new Vector2(prevscale);
         return r;
     }
     

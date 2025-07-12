@@ -165,7 +165,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				if(isPointInsideRect(getRectFOfObjectUi(object),touchPositionui)){
 					object.isDrag=true;
 					object.isUp = false;
-					object.isClick = false; 
+					//object.isClick = false; 
 					object.touchPosition.set(touchPositionui.getX(),touchPositionui.getY());
 					object.dragValue.set(dragValueUi.getX(),dragValueUi.getY());
 				}else{
@@ -175,7 +175,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 				if(isPointInsideRect(getRectFOfObject(object),touchPosition)){
 					object.isDrag = true;
 					object.isUp = false;
-					object.isClick = false;
+					//object.isClick = false;
 					object.touchPosition.set(touchPosition.getX(),touchPosition.getY());
 					object.dragValue.set(dragValue.getX(),dragValue.getY());
 				}else{
@@ -332,6 +332,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	public GameView(Context context,Activity activity){
 		super(context);
 		currentScene=new Scene();
+		activity.getActionBar().hide();
+		activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getHolder().addCallback(this);
 		this.activity = activity;
 		setFocusable(true);
@@ -344,11 +346,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					switch(event.getAction()){
 						case MotionEvent.ACTION_DOWN:
 							if(isUp){
-								findPositions(event);
+								isClick=true;
+								onClick(event);
 							}
+							findPositions(event);
 							isDown = true;
 							isUp = false;
-							isClick = false;
+							//isClick = false;
 							isDrag = false;
 							touchmilli = (int) System.currentTimeMillis();
 							touchdist.set(event.getX(),-event.getY());
@@ -368,7 +372,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 									}else isClick =false;
 								}else isClick = false;
 							}else isClick = false;
-							isDown=true;
+							isDown=false;
 							touchmilli = 0;
 							touchdist.set(0,0);
 							onUp(event);

@@ -11,6 +11,38 @@ public class Scene
 	public Scene(){
 		objects = new ArrayList<GameObject>();
 	}
+	public GameObject getObjectWithName(String name){
+		if(objects!=null){
+			for(GameObject o : objects){
+				if(o.name.equals(name)){
+					return o;
+				}
+			}
+		}
+		return new GameObject();
+	}
+	public ArrayList<GameObject> getObjectsWithName(String name){
+		ArrayList<GameObject> obs = new ArrayList<>();
+		if(objects!=null){
+			for(GameObject o : objects){
+				if(o.name.equals(name)){
+					obs.add(o);
+				}
+			}
+		}
+		return obs;
+	}
+	public ArrayList<GameObject> getObjectsFromLayer(String layer){
+		ArrayList<GameObject> obs = new ArrayList<>();
+		if(objects!=null){
+			for(GameObject o : objects){
+				if(o.layer.equals(layer)){
+					obs.add(o);
+				}
+			}
+		}
+		return obs;
+	}
 	public void setSceneComponent(SceneComponent comp,GameView gv){
 		this.comp = comp;
 		if(comp!=null)getSceneComponent().onAttach(gv);else getSceneComponent().onRemove(gv);
