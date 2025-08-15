@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		//try{
         pls = new PreLoadScene();
         //initialize a game view
         gamev = new GameView(this,this);
@@ -47,6 +48,9 @@ public class MainActivity extends Activity {
         pls.setBackgroundColour(Color.GRAY);
         gamev.setScene(pls.createScene(gamev));
         gamev.currentScene.backgroundcolor =(Color.BLUE);
+		//}catch(Exception e){
+			
+		//}
     }
 	
 }

@@ -1,4 +1,5 @@
 package RareEngine2.GameUtils;
+import android.telecom.StatusHints;
 
 
 public class UIFitter {
@@ -23,4 +24,7 @@ public class UIFitter {
             return new Vector2(1.0f, 1.0f); // Default scale (no scaling)
         }
     }
+	public static float pointForPoint(float fixedWidth,float point,float calculatingWidth){
+		return calculatingWidth*(point/fixedWidth);
+	} 
 }

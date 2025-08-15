@@ -13,7 +13,6 @@ public class TextRenderer extends Renderer
 	public FontFrom fontfrom = FontFrom.Default;
 	public String fontpath="";
 	public int fontResourceId=-1;
-	public Vector2 scale;
 	
 	public enum FontFrom{
 		Asset,File,Default,Resource

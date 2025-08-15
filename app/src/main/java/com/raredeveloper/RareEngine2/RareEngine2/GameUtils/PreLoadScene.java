@@ -4,6 +4,7 @@ package RareEngine2.GameUtils;
  * @Author Rare Developer 
  * @Date 2025/06/15 14:01
  */
+import android.app.Activity;
 import java.util.ArrayList;
 /*
 its is like scene file
@@ -25,7 +26,7 @@ public class PreLoadScene {
 	public GameObject getObjectWithName(String name){
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.name.equals(name)){
+				if(o.getName().equals(name)){
 					return o;
 				}
 			}
@@ -36,7 +37,7 @@ public class PreLoadScene {
 		ArrayList<GameObject> obs = new ArrayList<>();
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.name.equals(name)){
+				if(o.getName().equals(name)){
 					obs.add(o);
 				}
 			}
@@ -47,7 +48,7 @@ public class PreLoadScene {
 		ArrayList<GameObject> obs = new ArrayList<>();
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.layer.equals(layer)){
+				if(o.getLayer().equals(layer)){
 					obs.add(o);
 				}
 			}
@@ -62,7 +63,7 @@ public class PreLoadScene {
     }
     public void removeObjectWithName(String name){
         for(GameObject o:objects){
-            if(o.name.equals( name)){
+            if(o.getName().equals( name)){
                 objects.remove(o);
                 break;
             }
@@ -81,4 +82,16 @@ public class PreLoadScene {
         s.setBackgroundColour(backgroundcolor);
         return s;
     }
+
+	@Override
+	public String toString() {
+		String ob = "";
+		for(GameObject o: objects){
+			ob.concat("\n").concat(o.toString());
+		}
+		ob.concat("\n").concat(""+backgroundcolor);
+		ob.concat("\n").concat(comp.toString());
+		return ob;
+	}
+	
 }

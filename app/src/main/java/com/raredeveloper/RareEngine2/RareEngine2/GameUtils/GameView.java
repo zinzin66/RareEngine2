@@ -8,11 +8,13 @@ import java.util.*;
 import android.widget.*;
 import android.app.*;
 import android.util.*;
+import android.content.res.Configuration;
+import android.annotation.Nullable;
 
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
-	public boolean paused = false;
+	public boolean paused = false,destroyed = false;
 	private Handler h;
 	public static final String REMOVE_WATERMARK_PASS = "-watermark";
 	private long frames = 0;
@@ -22,10 +24,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	private Paint paint;
 	private int touchmilli;
 	private Vector2 touchdist = new Vector2();
-	public Vector2 CameraPosition = new Vector2(),touchPosition = new Vector2(),touchPositionui = new Vector2(),dragValue = new Vector2(),dragValueUi = new Vector2();
+	public Vector2 touchPosition = new Vector2(),touchPositionui = new Vector2(),dragValue = new Vector2(),dragValueUi = new Vector2();
 	public boolean isDown,isUp,isClick,isDrag;
 	private Activity activity;
-	private boolean drawWaterMark=true;
+	private boolean drawWaterMark=true ;
+	
+	
 	@Override
 	public void surfaceCreated(final SurfaceHolder sh)
 	{
@@ -36,34 +40,37 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		if(currentScene==null){
 			setScene(new Scene());
 		}
-		layers.add("background");
-		layers.add("objects");
+		
 		isDown = false;isUp = true;isClick = false;isDrag = false;paused=false;
-		layers.add("ui");
+		
 		currentScene.setBackgroundColour(Color.WHITE);
 		h= new Handler(thread.getLooper());
-		h.post(new Runnable(){
-
+		
+			h.post(new Runnable(){
 				@Override
 				public void run()
 				{
-					Canvas can =new Canvas();
-					can= sh.lockCanvas();
+					if(!destroyed){
+					Canvas can = sh.lockCanvas();
 					if(can!=null){
 						can.drawColor(currentScene.backgroundcolor);
                         try{
 						update(can);
+						
 						}catch(Exception e){}
 					}
-					if(drawWaterMark){
+					if(can!=null&&drawWaterMark){
 						drawWaterMark(can);
 					}
 					if(can != null)sh.unlockCanvasAndPost(can);
 					
-					h.postDelayed(this,16);
-					
+					if(!paused){
+						h.postDelayed(this,16);
+					}
+					}
 				}
 			});
+			
 	}
 	public void drawWaterMark(Canvas can){
 		can.save();
@@ -79,17 +86,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		can.restore();
 		
 	}
+	public void drawOwnWaterMark(Canvas can,String WaterMarkText,int outlineColor,int fillColor,float textSize){
+		can.save();
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeWidth(8);
+		float width = paint.measureText(WaterMarkText);
+		can.translate(getWidth()/2-(width/2),getHeight()-80);
+		paint.setColor(outlineColor);paint.setTextSize(textSize);paint.setAntiAlias(true);
+		can.drawText(WaterMarkText,0,0,paint);
+		paint.setColor(fillColor);
+		paint.setStyle(Paint.Style.FILL);
+		can.drawText(WaterMarkText,0,0,paint);
+		can.restore();
+
+	}
 	public void removeWaterMark(String password){
 		if(password.equals(GameView.REMOVE_WATERMARK_PASS)){
 			drawWaterMark = false;
 		}else{
-			toast("wrong password",Toast.LENGTH_LONG);
+			drawWaterMark = true;
 		}
 	}
 	
 	public void findPositions(MotionEvent e){
 		touchPositionui.set(e.getX()-(getWidth()/2),-(e.getY()-(getHeight()/2)));
-		touchPosition.set(e.getX()-(getWidth()/2)+CameraPosition.getX(),-(e.getY()-(getHeight()/2)+CameraPosition.getY()));
+		touchPosition.set(e.getX()-(getWidth()/2)+currentScene.CameraPosition.getX(),-(e.getY()-(getHeight()/2)+currentScene.CameraPosition.getY()));
 	}
 	
 	
@@ -241,7 +262,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	{
 		paused=true;
 		h.removeCallbacksAndMessages(null);
+		thread.stop();
+		thread.destroy();
 		thread.quitSafely();
+		destroyed = true;
+		
+		
 	}
 	public void addObject(GameObject o){
 		currentScene.objects.add(o);
@@ -251,7 +277,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	public void removeObjectWithName(String name){
 		for(GameObject o:currentScene.objects){
-			if(o.name == name){
+			if(o.getName().equals(name)){
 				currentScene.objects.remove(o);
 				break;
 			}
@@ -297,7 +323,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			if(component instanceof Renderer){
 				if(component.isEnabled&&object.isVisible&&object.isEnabled){
 					int id=canvas.save();
-					Vector2 cam = new Vector2(CameraPosition);
+					Vector2 cam = new Vector2(currentScene.CameraPosition);
 					Log.d("rendercomp","working rendercomp");
 					if(!object.getLayer().equals("ui")){
 						canvas.translate((getWidth()/2)+object.globalposition.getX()-cam.getX(),(getHeight()/2)-object.globalposition.getY()-cam.getY());
@@ -331,6 +357,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	public GameView(Context context,Activity activity){
 		super(context);
+		
 		currentScene=new Scene();
 		activity.getActionBar().hide();
 		activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -338,6 +365,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		this.activity = activity;
 		setFocusable(true);
 		setFocusableInTouchMode(true);
+		layers.add("background");
+		layers.add("objects");
+		layers.add("ui");
 		setOnTouchListener(new SurfaceView.OnTouchListener(){
 
 				@Override
@@ -401,17 +431,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	public void pause() {
 		paused = true;
-		try {
-			thread.join(); // wait for the thread to finish
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		try{
+		thread.stop(); // wait for the thread to finish
+		}catch(Exception e){
+			
 		}
 	}
 
+	@Override
+	public void onWindowFocusChanged(boolean hasWindowFocus) {
+		super.onWindowFocusChanged(hasWindowFocus);
+		if(hasWindowFocus){
+			resume();
+		}else{
+			pause();
+		}
+		
+	}
+	
 	public void resume() {
 		paused = false;
-		thread = new HandlerThread("new thread");
-		thread.start();
+		
 	}
 	
 }

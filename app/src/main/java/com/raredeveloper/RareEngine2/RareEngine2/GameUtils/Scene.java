@@ -7,6 +7,7 @@ public class Scene
 {
 	public ArrayList<GameObject> objects ;
 	public int backgroundcolor=0;
+	public Vector2 CameraPosition = new Vector2();
 	private SceneComponent comp;
 	public Scene(){
 		objects = new ArrayList<GameObject>();
@@ -14,7 +15,7 @@ public class Scene
 	public GameObject getObjectWithName(String name){
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.name.equals(name)){
+				if(o.getName().equals(name)){
 					return o;
 				}
 			}
@@ -25,7 +26,7 @@ public class Scene
 		ArrayList<GameObject> obs = new ArrayList<>();
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.name.equals(name)){
+				if(o.getName().equals(name)){
 					obs.add(o);
 				}
 			}
@@ -36,7 +37,7 @@ public class Scene
 		ArrayList<GameObject> obs = new ArrayList<>();
 		if(objects!=null){
 			for(GameObject o : objects){
-				if(o.layer.equals(layer)){
+				if(o.getLayer().equals(layer)){
 					obs.add(o);
 				}
 			}
@@ -58,7 +59,7 @@ public class Scene
 	}
 	public void removeObjectWithName(String name){
 		for(GameObject o:objects){
-			if(o.name.equals(name)){
+			if(o.getName().equals(name)){
 				objects.remove(o);
 				break;
 			}

@@ -17,6 +17,7 @@ public class ImageRenderer extends Renderer
 	private Vector2 prevscale;
 	private Bitmap previmg;
 	public ImageRenderer(){
+		scale = new Vector2();
 		tileid = new Vector2(0,0);
 		tilescale = new Vector2();
 		prevscale = new Vector2();
@@ -26,7 +27,7 @@ public class ImageRenderer extends Renderer
 	{
 		super.start(o,gv);
 		prevscale.set(o.scale.getX(),o.scale.getY());
-		
+		scale.set(prevscale.getX(),prevscale.getY());
 	}
 	public Vector2 getTileIdWithNumber(int number){
 		int width = Math.round(image.getWidth()/tilescale.getX());
@@ -67,6 +68,7 @@ public class ImageRenderer extends Renderer
 				image = mapi;
                 previmg = image;
 				
+				scale.set(prevscale.getX(),prevscale.getY());
 			}
 			src.set(Math.round(tileid.getX()*tilescale.getX()),Math.round(tileid.getY()*tilescale.getY()),Math.round(tilescale.getX()+(tileid.getX()*tilescale.getX())),Math.round(tilescale.getY()+(tileid.getY()*tilescale.getY())));
 			RectF dst = new RectF();

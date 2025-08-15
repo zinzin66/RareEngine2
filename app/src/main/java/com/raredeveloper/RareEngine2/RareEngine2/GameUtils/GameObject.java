@@ -12,7 +12,7 @@ public class GameObject implements Cloneable
 	public GameObject parent;
 	public float rotation,globalrotation;
 	private ArrayList<Component> components;
-	public String name,layer;
+	private String name,layer;
 	public MotionEvent event = null;
 	public GameObject(){
 		isEnabled = true;
@@ -65,11 +65,23 @@ public class GameObject implements Cloneable
 		}
 		return null; // Return null if not found
 	}
-	
+	@SuppressWarnings("unchecked")
+	public <T extends Component> ArrayList<Component> getComponents(Class<T> c) {
+		ArrayList<Component> ca = new ArrayList<>();
+		if (components != null) {
+			for (Component com : components) {
+				if (c.isInstance(com)) {
+					ca.add(com);
+				}
+			}
+		}
+		return ca; // Return new array of component if not found
+	}
 	public void removeComponentAt(int id){
 		components.remove(id);
 	}
 	public void calculateGlobals(){
+		calculateScales();
 		if(parent!=null){
 			parent.calculateGlobals();
 			globalposition = new Vector2(position.getX()+parent.globalposition.getX(),position.getY()+parent.globalposition.getY());
@@ -82,7 +94,19 @@ public class GameObject implements Cloneable
 		}
 		
 	}
-	
+	private void calculateScales(){
+		for(Component c : components){
+			if(c instanceof Renderer){
+				Renderer r = (Renderer) c;
+				if(scale.getX()<r.scale.getX()){
+					scale.setX(r.scale.getX());
+				}
+				if(scale.getY()<r.scale.getY()){
+					scale.setY(r.scale.getY());
+				}
+			}
+		}
+	}
 	public void setName(String name){
 		this.name = name;
 	}

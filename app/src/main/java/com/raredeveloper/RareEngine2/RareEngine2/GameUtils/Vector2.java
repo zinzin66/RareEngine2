@@ -40,7 +40,12 @@ public class Vector2 {
         this.x = x;
         this.y = y; // No inversion anymore
     }
-
+	
+	public void set(Vector2 v){
+		this.x=v.x;
+		this.y = v.y;
+	}
+	
     public static Vector2 getFromString(String str) {
         String[] parts = str.split(",");
         if (parts.length != 2) {
@@ -93,6 +98,42 @@ public class Vector2 {
         return this;
     }
 
+	public Vector2 staticAdd(Vector2 other) {
+        this.x += other.x;
+        this.y += other.y; // No inversion anymore
+        return this;
+    }
+
+    public Vector2 staticSubtract(Vector2 other) {
+        this.x -= other.x;
+        this.y -= other.y; // No inversion anymore
+        return this;
+    }
+
+    public Vector2 staticMultiply(float scalar) {
+        this.x *= scalar;
+        this.y *= scalar;
+        return this;
+    }
+
+    public Vector2 staticMultiply(float sx, float sy) {
+        this.x *= sx;
+        this.y *= sy;
+        return this;
+    }
+
+    public Vector2 staticDivide(float scalar) {
+        this.x /= scalar;
+        this.y /= scalar;
+        return this;
+    }
+
+    public Vector2 staticDivide(float sx, float sy) {
+        this.x /= sx;
+        this.y /= sy;
+        return this;
+    }
+	
     public float magnitude() {
         return (float) Math.sqrt(x * x + y * y);
     }
@@ -131,7 +172,7 @@ public class Vector2 {
         return "("+x + "," + y+")"; // No inversion anymore
     }
 
-    public static float doProduct(Vector2 v1, Vector2 v2) {
+    public static float dotProduct(Vector2 v1, Vector2 v2) {
         return v1.x * v2.x + v1.y * v2.y;
     }
 	public static double angleBetween(Vector2 v1, Vector2 v2) {
