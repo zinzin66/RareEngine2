@@ -1,1 +1,60 @@
 
+name: Java CI (No Maven)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: List Java files
+        run: |
+          echo "Listing all Java files:"
+          find src -name "*.java"
+
+      - name: Compile Java files
+        run: |
+          mkdir -p out
+          javac -d out $(find src -name "*.java")
+
+      - name: Run tests
+        run: |
+          # Crée un répertoire pour les rapports de test
+          mkdir -p test-reports
+          # Exécution des tests unitaires (si tu as des classes de test avec main ou JUnit 5)
+          # Ici on suppose des tests avec JUnit 5
+          java -cp "out:libs/*:path/to/junit-platform-console-standalone.jar" \
+               org.junit.platform.console.ConsoleLauncher \
+               --scan-classpath \
+               --reports-dir=test-reports
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: test-reports/*.xml
+
+      - name: Package JAR
+        run: |
+          mkdir -p dist
+          jar cf dist/RareEngine2.jar -C out .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-artifact
+          path: dist/*.jar
