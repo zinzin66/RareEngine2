@@ -9,8 +9,27 @@ public class Scene
 	public int backgroundcolor=0;
 	public Vector2 CameraPosition = new Vector2();
 	private SceneComponent comp;
+	private float zoom = 1;
+	private Vector2 pinchPoint;
+	public void setZoom(float zoom){
+		this.zoom = zoom;
+	}
+	public float getZoom(){
+		return zoom;
+	}
+	public void setPinchPoint(Vector2 pinchPoint){
+		this.pinchPoint = pinchPoint;
+	}
+	public void setPinchPoint(float x,float y){
+		pinchPoint.set(x,y);
+	}
+	public Vector2 getPinchPoint(){
+		return pinchPoint;
+	}
 	public Scene(){
 		objects = new ArrayList<GameObject>();
+		pinchPoint = new Vector2();
+		
 	}
 	public GameObject getObjectWithName(String name){
 		if(objects!=null){

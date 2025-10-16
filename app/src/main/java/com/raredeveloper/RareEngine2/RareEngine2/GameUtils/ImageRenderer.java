@@ -16,8 +16,9 @@ public class ImageRenderer extends Renderer
 	public static final float MATCH_IMAGE =-1;
 	private Vector2 prevscale;
 	private Bitmap previmg;
+	public boolean pixeled = true;
 	public ImageRenderer(){
-		scale = new Vector2();
+		scale = new Vector2(100,100);
 		tileid = new Vector2(0,0);
 		tilescale = new Vector2();
 		prevscale = new Vector2();
@@ -27,7 +28,7 @@ public class ImageRenderer extends Renderer
 	{
 		super.start(o,gv);
 		prevscale.set(o.scale.getX(),o.scale.getY());
-		scale.set(prevscale.getX(),prevscale.getY());
+		//scale.set(prevscale.getX(),prevscale.getY());
 	}
 	public Vector2 getTileIdWithNumber(int number){
 		int width = Math.round(image.getWidth()/tilescale.getX());
@@ -62,9 +63,10 @@ public class ImageRenderer extends Renderer
 				tilescale.setY(image.getHeight());
 			}
 			Rect src = new Rect();
-			if(prevscale.getX()!=object.scale.getX()||prevscale.getY()!=object.scale.getY()||previmg!=image){
-				prevscale.set(object.scale.getX(),object.scale.getY());
-				Bitmap mapi = Bitmap.createScaledBitmap(image,(int)prevscale.getX(),(int)prevscale.getY(),true);
+			if(prevscale.getX()!=scale.getX()||prevscale.getY()!=scale.getY()||previmg!=image){
+				prevscale.set(scale.getX(),scale.getY());
+				Bitmap mapi = Bitmap.createScaledBitmap(image,(int)prevscale.getX(),(int)prevscale.getY(),!pixeled);
+				
 				image = mapi;
                 previmg = image;
 				
@@ -74,6 +76,8 @@ public class ImageRenderer extends Renderer
 			RectF dst = new RectF();
 			//ltrb
 			dst.set(-object.scale.getX()/2,-object.scale.getY()/2,object.scale.getX()/2,object.scale.getY()/2);
+			p.setFilterBitmap(!pixeled);
+			p.setAntiAlias(!pixeled);
 			canvas.drawBitmap(image,src,dst,p);
 			
 		}

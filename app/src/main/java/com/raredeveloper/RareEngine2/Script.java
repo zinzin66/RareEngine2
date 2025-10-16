@@ -5,6 +5,7 @@ import RareEngine2.GameUtils.GameView;
 import RareEngine2.GameUtils.Vector2;
 import RareEngine2.GameUtils.ImageRenderer;
 import android.graphics.Color;
+import android.widget.Toast;
 
 /**
  * @Author Rare Developer 
@@ -31,6 +32,11 @@ public class Script extends Component {
            gv.currentScene.addObject(op);
            
         }
+		if(gv.isDown){
+			if(o.isDown){
+				MainActivity.toast("click");
+			}
+		}
         super.update(o, gv);
     }
 

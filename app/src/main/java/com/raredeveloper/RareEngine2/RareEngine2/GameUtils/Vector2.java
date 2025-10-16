@@ -99,39 +99,27 @@ public class Vector2 {
     }
 
 	public Vector2 staticAdd(Vector2 other) {
-        this.x += other.x;
-        this.y += other.y; // No inversion anymore
-        return this;
+        return new Vector2(this.x+other.x,this.y + other.y);
     }
 
     public Vector2 staticSubtract(Vector2 other) {
-        this.x -= other.x;
-        this.y -= other.y; // No inversion anymore
-        return this;
+        return new Vector2(this.x-other.x,this.y -other.y);
     }
 
     public Vector2 staticMultiply(float scalar) {
-        this.x *= scalar;
-        this.y *= scalar;
-        return this;
+        return new Vector2(this.x*scalar,this.y*scalar);
     }
 
     public Vector2 staticMultiply(float sx, float sy) {
-        this.x *= sx;
-        this.y *= sy;
-        return this;
+        return new Vector2(this.x*sx,this.y *sy);
     }
 
     public Vector2 staticDivide(float scalar) {
-        this.x /= scalar;
-        this.y /= scalar;
-        return this;
+        return new Vector2(this.x/scalar,this.y/scalar);
     }
 
     public Vector2 staticDivide(float sx, float sy) {
-        this.x /= sx;
-        this.y /= sy;
-        return this;
+        return new Vector2(this.x/sx,this.y/sy);
     }
 	
     public float magnitude() {

@@ -1,21 +1,22 @@
 package com.raredeveloper.RareEngine2;
  
-import android.app.Activity;
-import android.os.Bundle;
-import RareEngine2.GameUtils.GameView;
-import android.view.Window;
 import RareEngine2.GameUtils.GameObject;
+import RareEngine2.GameUtils.GameView;
 import RareEngine2.GameUtils.ImageRenderer;
 import RareEngine2.GameUtils.PreLoadScene;
-import android.graphics.Color;
 import RareEngine2.GameUtils.TextRenderer;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.widget.Toast;
 //@author raredeveloper
 public class MainActivity extends Activity {
 	
     //main game view
      public GameView gamev;
 	public PreLoadScene pls;
-
+	public static Context ct;
 	@Override()
 	public void onPointerCaptureChanged(boolean hasCapture) {
 		
@@ -23,7 +24,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		//try{
+		MainActivity.ct = getApplicationContext();
         pls = new PreLoadScene();
         //initialize a game view
         gamev = new GameView(this,this);
@@ -47,11 +48,14 @@ public class MainActivity extends Activity {
         pls.addObject(o);
         pls.setBackgroundColour(Color.GRAY);
         gamev.setScene(pls.createScene(gamev));
+		gamev.currentScene.setZoom(2);
+		gamev.currentScene.CameraPosition.setX(-40);;
         gamev.currentScene.backgroundcolor =(Color.BLUE);
-		//}catch(Exception e){
-			
-		//}
+		
     }
+	public static void toast(String s){
+		Toast.makeText(ct,s,Toast.LENGTH_SHORT).show();
+	}
 	
 }
 

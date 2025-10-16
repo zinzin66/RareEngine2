@@ -6,6 +6,9 @@ public class SceneComponent {
     public void onAttach(GameView gv){
 		
 	}
+	public void onStart(GameView gv){
+		
+	}
 	public void update(GameView gv,Canvas canvas,Paint p){
 		
 	}

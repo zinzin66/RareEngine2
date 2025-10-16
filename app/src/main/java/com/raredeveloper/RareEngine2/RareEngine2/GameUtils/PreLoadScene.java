@@ -14,8 +14,27 @@ public class PreLoadScene {
     public ArrayList<GameObject> objects ;
 	public int backgroundcolor=0;
 	private SceneComponent comp;
+	public Vector2 CameraPosition = new Vector2();
+	private float zoom = 1;
+	private Vector2 pinchPoint;
+	public void setZoom(float zoom){
+		this.zoom = zoom;
+	}
+	public float getZoom(){
+		return zoom;
+	}
+	public void setPinchPoint(Vector2 pinchPoint){
+		this.pinchPoint = pinchPoint;
+	}
+	public void setPinchPoint(float x,float y){
+		pinchPoint.set(x,y);
+	}
+	public Vector2 getPinchPoint(){
+		return pinchPoint;
+	}
     public PreLoadScene(){
         objects = new ArrayList<>();
+		pinchPoint = new Vector2();
     }
 	public void setSceneComponent(SceneComponent comp){
 		this.comp = comp;
@@ -78,6 +97,9 @@ public class PreLoadScene {
         for(GameObject o:objects){
             s.addObject(o.copy(gv));
         }
+		s.CameraPosition = new Vector2(CameraPosition);
+		s.setZoom(getZoom());
+		s.setPinchPoint(new Vector2(getPinchPoint()));
 		if(comp!= null)s.setSceneComponent(getSceneComponent().copy(),gv);
         s.setBackgroundColour(backgroundcolor);
         return s;
